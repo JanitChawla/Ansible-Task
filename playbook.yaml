@@ -1,0 +1,25 @@
+- hosts: myServers
+  become: True
+  become_user: root
+  tasks:
+    - name: "apt-get update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: latest
+    - name: Generate index.html
+      template:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: root
+        group: root
+        mode: 0744
+    - name: Enable Nginx service
+      systemd:
+        name: nginx
+        daemon_reload: yes
+        enabled: yes
+        state: started
